@@ -87,6 +87,10 @@ export function parseRow(table: string, row: Record<string, unknown> | null | un
   return doc;
 }
 
+function bindable(value: unknown): unknown {
+  return value === undefined ? null : value;
+}
+
 export function serializeDoc(table: string, doc: Record<string, any>): Record<string, unknown> {
   const out: Record<string, unknown> = { ...doc };
   if (out._id && !out.id) out.id = out._id;
@@ -101,6 +105,9 @@ export function serializeDoc(table: string, doc: Record<string, any>): Record<st
       out[field] = out[field] ? 1 : 0;
     }
   }
+  for (const key of Object.keys(out)) {
+    if (out[key] === undefined) out[key] = null;
+  }
   return out;
 }
 
@@ -112,7 +119,7 @@ export async function all<T = any>(
   const db = await getDb();
   const result = await db
     .prepare(sql)
-    .bind(...params)
+    .bind(...params.map(bindable))
     .all();
   return (result.results || []).map((row: Record<string, unknown>) => parseRow(table, row)) as T[];
 }
@@ -125,7 +132,7 @@ export async function first<T = any>(
   const db = await getDb();
   const row = await db
     .prepare(sql)
-    .bind(...params)
+    .bind(...params.map(bindable))
     .first();
   return parseRow(table, row as Record<string, unknown> | null) as T | null;
 }
@@ -134,7 +141,7 @@ export async function run(sql: string, params: unknown[] = []): Promise<void> {
   const db = await getDb();
   await db
     .prepare(sql)
-    .bind(...params)
+    .bind(...params.map(bindable))
     .run();
 }
 
@@ -181,7 +188,7 @@ export async function countRows(sql: string, params: unknown[] = []): Promise<nu
   const db = await getDb();
   const row = await db
     .prepare(sql)
-    .bind(...params)
+    .bind(...params.map(bindable))
     .first<{ n: number }>();
   return Number(row?.n || 0);
 }
@@ -206,7 +213,7 @@ export async function batchInsert(table: string, docs: Record<string, any>[]): P
         .prepare(
           `INSERT INTO ${table} (${keys.map(quoteIdent).join(', ')}) VALUES (${keys.map(() => '?').join(', ')})`
         )
-        .bind(...keys.map((k) => payload[k]));
+        .bind(...keys.map((k) => bindable(payload[k])));
     });
     await db.batch(statements);
   }

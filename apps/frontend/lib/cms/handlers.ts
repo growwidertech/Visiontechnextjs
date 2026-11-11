@@ -68,16 +68,20 @@ async function logActivity(input: {
   entityTitle?: string;
   details?: string;
 }) {
-  await insertRow('activity_logs', {
-    userId: input.user?.id,
-    userName: input.userName || input.user?.name || 'System',
-    userRole: input.userRole || input.user?.roleName || 'Admin',
-    action: input.action,
-    module: input.module,
-    entityId: input.entityId || '',
-    entityTitle: input.entityTitle || '',
-    details: input.details || '',
-  });
+  try {
+    await insertRow('activity_logs', {
+      userId: input.user?.id || null,
+      userName: input.userName || input.user?.name || 'System',
+      userRole: input.userRole || input.user?.roleName || 'Admin',
+      action: input.action,
+      module: input.module,
+      entityId: input.entityId || '',
+      entityTitle: input.entityTitle || '',
+      details: input.details || '',
+    });
+  } catch (err) {
+    console.error('activity log failed', err);
+  }
 }
 
 function searchLike(q: string) {
