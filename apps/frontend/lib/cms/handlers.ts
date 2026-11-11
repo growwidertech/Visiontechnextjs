@@ -470,6 +470,22 @@ async function handleCrud(
       (await first(table, `SELECT * FROM ${table} WHERE slug = ? AND isDeleted = 0 LIMIT 1`, [id])) ||
       (await findById(table, id));
     if (!row || (row as any).isDeleted) return fail('Not found', 404);
+    if (table === 'projects') {
+      const related = await all(
+        'projects',
+        `SELECT * FROM projects WHERE isDeleted = 0 AND status = 'published' AND id != ? AND (category = ? OR projectType = ?) ORDER BY isFeatured DESC, displayOrder ASC LIMIT 3`,
+        [(row as any)._id, (row as any).category, (row as any).projectType]
+      );
+      return ok({ project: row, relatedProjects: related });
+    }
+    if (table === 'blog_posts') {
+      const related = await all(
+        'blog_posts',
+        `SELECT * FROM blog_posts WHERE isDeleted = 0 AND status = 'published' AND id != ? ORDER BY publishedAt DESC LIMIT 3`,
+        [(row as any)._id]
+      );
+      return ok({ post: row, relatedPosts: related });
+    }
     return ok(row);
   }
 
