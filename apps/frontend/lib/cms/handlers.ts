@@ -412,9 +412,57 @@ async function handleCrud(
       sql += ' AND category = ?';
       params.push(query.get('category'));
     }
+    if (query.get('projectType') && query.get('projectType') !== 'All') {
+      sql += ' AND projectType = ?';
+      params.push(query.get('projectType'));
+    }
+    if (query.get('location') && query.get('location') !== 'All') {
+      sql += ' AND lower(location) LIKE ?';
+      params.push(`%${String(query.get('location')).toLowerCase()}%`);
+    }
+    if (query.get('featured') === 'true') {
+      sql += ' AND isFeatured = 1';
+    }
+    if (query.get('search')) {
+      const like = `%${String(query.get('search')).toLowerCase()}%`;
+      sql += ' AND (lower(title) LIKE ? OR lower(location) LIKE ? OR lower(category) LIKE ? OR lower(description) LIKE ?)';
+      params.push(like, like, like, like);
+    }
     sql += ` ORDER BY ${order}`;
     if (query.get('limit')) sql += ` LIMIT ${Number(query.get('limit')) || 100}`;
-    return ok(await all(table, sql, params));
+    const rows = await all(table, sql, params);
+
+    if (table === 'projects') {
+      const locRows = await all(
+        'projects',
+        `SELECT DISTINCT location FROM projects WHERE isDeleted = 0 AND status = 'published'`
+      );
+      return ok({
+        projects: rows,
+        locations: locRows.map((r: any) => r.location).filter(Boolean),
+        pagination: { page: 1, limit: rows.length, total: rows.length, totalPages: 1 },
+      });
+    }
+    if (table === 'gallery_albums') {
+      const items: any[] = [];
+      for (const album of rows) {
+        for (const item of album.items || []) {
+          items.push({
+            ...item,
+            albumTitle: album.title,
+            albumSlug: album.slug,
+            albumId: album._id,
+            associatedProject: album.associatedProject,
+          });
+        }
+      }
+      return ok({ albums: rows, items });
+    }
+    if (table === 'blog_posts') {
+      const categories = Array.from(new Set(rows.map((r: any) => r.category).filter(Boolean)));
+      return ok({ posts: rows, categories });
+    }
+    return ok(rows);
   }
 
   if (method === 'GET' && id) {
