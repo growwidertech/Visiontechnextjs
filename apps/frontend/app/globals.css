@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: #FAF7F2;
+    color: #1E252B;
+  }
+
+  body {
+    font-family: var(--font-plus-jakarta), system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-serif-luxury {
+    font-family: var(--font-cormorant), Georgia, serif;
+  }
+}
+
+/* Custom subtle luxury scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0B1623;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4A853;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E2BC6B;
+}
+
+/* TipTap Rich Text Editor Styling */
+.ProseMirror {
+  min-height: 220px;
+  outline: none;
+  padding: 1rem;
+}
+.ProseMirror h2, .ProseMirror h3 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.ProseMirror p {
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+}
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}

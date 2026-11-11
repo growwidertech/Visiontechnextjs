@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Next.js / build
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+
+# Env and secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs and debug
+logs/
+*.log
+npm-debug.log*
+
+# Embedded MongoDB / local data
+.data/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Uploads / temp
+uploads/
+tmp/
+temp/
