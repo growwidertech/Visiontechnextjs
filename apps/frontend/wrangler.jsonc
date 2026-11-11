@@ -1,7 +1,6 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "visiontechnextjs",
-  "account_id": "c8a4f99bb63dae571ca58bfec17b0ad3",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-10-01",
   "compatibility_flags": ["nodejs_compat"],
@@ -16,7 +15,7 @@
     "ADMIN_EMAIL": "admin@visiontechsolutions.co.in",
     "ADMIN_PASSWORD": "Admin@123456",
     "JWT_SECRET": "vision-tech-super-secret-jwt-key-2026-cloudflare",
-    "NEXT_PUBLIC_SITE_URL": "https://visiontechnextjs.drshiva.workers.dev"
+    "NEXT_PUBLIC_SITE_URL": "https://visiontechsolutions.co.in"
   },
   "d1_databases": [
     {
