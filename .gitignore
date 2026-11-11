@@ -7,6 +7,10 @@ out/
 dist/
 build/
 *.tsbuildinfo
+.open-next/
+.wrangler/
+.dev.vars
+worker-configuration.d.ts
 
 # Env and secrets
 .env

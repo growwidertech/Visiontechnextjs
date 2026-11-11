@@ -1,0 +1,29 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "visiontechnextjs",
+  "account_id": "c8a4f99bb63dae571ca58bfec17b0ad3",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "ADMIN_EMAIL": "admin@visiontechsolutions.co.in",
+    "ADMIN_PASSWORD": "Admin@123456",
+    "JWT_SECRET": "vision-tech-super-secret-jwt-key-2026-cloudflare",
+    "NEXT_PUBLIC_SITE_URL": "https://visiontechnextjs.drshiva.workers.dev"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "visiontechnextjs-db",
+      "database_id": "72b00901-db05-40ea-885d-756f89206365",
+      "migrations_dir": "migrations"
+    }
+  ],
+}

@@ -1,5 +1,4 @@
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export async function apiFetch<T = any>(
   endpoint: string,
@@ -27,7 +26,11 @@ export async function apiFetch<T = any>(
     cache: options.cache || 'no-store',
   });
 
-  const json = await res.json().catch(() => ({}));
+  const json = (await res.json().catch(() => ({}))) as {
+    success?: boolean;
+    message?: string;
+    data?: T;
+  };
   if (!res.ok || json.success === false) {
     throw new Error(json.message || `API Error (${res.status})`);
   }
@@ -36,8 +39,13 @@ export async function apiFetch<T = any>(
 
 export async function fetchPublicBundle() {
   try {
-    return await apiFetch('/dashboard/public-bundle');
+    const { getPublicBundle } = await import('@/lib/cms/queries');
+    return await getPublicBundle();
   } catch {
-    return null;
+    try {
+      return await apiFetch('/dashboard/public-bundle');
+    } catch {
+      return null;
+    }
   }
 }
